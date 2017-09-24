@@ -5,6 +5,7 @@ namespace backend\controllers;
 use backend\models\Article;
 use backend\models\ArticleCategory;
 use backend\models\ArticleDetail;
+use backend\models\Brand;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
 use yii\web\Controller;
@@ -36,13 +37,11 @@ class ArticleController extends Controller{
 
 
         }
-//添加
-
-
+    //添加
     public function actionAdd()
     {
-        $article_category=ArticleCategory::find()->asArray()->all();
-        $data=ArrayHelper::map($article_category,'id','name');
+        $brand= ArticleCategory::find()->asArray()->all();
+        $data=ArrayHelper::map($brand,'id','name');
         $model = new Article();
         $content = new ArticleDetail();
         $request = \Yii::$app->request;

@@ -35,7 +35,7 @@
             <td ><?=$model->id?></td>
             <td ><?=$model->name?></td>
             <td><img src="<?=$model->logo?>" width="90px"></td>
-            <td><?=$model->goods_category->name?></td>
+            <td><?=$model->goodsCategory->name?></td>
             <td><?=$model->brand->name?></td>
             <td><?=$model->market_price?></td>
             <td><?=$model->shop_price?></td>

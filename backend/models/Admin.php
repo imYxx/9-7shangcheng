@@ -22,8 +22,9 @@ use yii\web\IdentityInterface;
  */
 class Admin extends \yii\db\ActiveRecord implements IdentityInterface
 {
-    public $password;//¶¨ÒåÒ»¸öÃ÷ÎÄµÄÃÜÂë
-    //³£Á¿¶¨Òå³¡¾°
+    public $password;//å®šä¹‰ä¸€ä¸ªæ˜æ–‡çš„å¯†ç 
+    public $roles;
+    //å¸¸é‡å®šä¹‰åœºæ™¯
     //const SCENARIO_ADD = 'add';
     /**
      * @inheritdoc
@@ -34,19 +35,19 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
     }
 
     public function beforeSave($insert){
-        if($insert){//Ìí¼Ó
-            //±£´æÖ®Ç°Ìí¼Ó´¬½¢Ê±¼ä
+        if($insert){//æ·»åŠ 
+            //ä¿å­˜ä¹‹å‰æ·»åŠ èˆ¹èˆ°æ—¶é—´
             $this->created_at=time();
-            //±£´æÖ®Ç°¶ÔÃÜÂë½øĞĞhash¼ÓÃÜ
+            //ä¿å­˜ä¹‹å‰å¯¹å¯†ç è¿›è¡ŒhashåŠ å¯†
             $this->password_hash=\Yii::$app->security->generatePasswordHash($this->password_hash);
-            //±£´æÖ®Ç°Éú³ÉÒ»¸öËæ»úÊı
+            //ä¿å­˜ä¹‹å‰ç”Ÿæˆä¸€ä¸ªéšæœºæ•°
             $this->auth_key=\Yii::$app->security->generateRandomString();
-        }else{//ĞŞ¸Ä
+        }else{//ä¿®æ”¹
             $this->updated_at=time();
-            //ÅĞ¶ÏÓĞÃÜÂë²ÅÖ´ĞĞ
+            //åˆ¤æ–­æœ‰å¯†ç æ‰æ‰§è¡Œ
             if($this->password) {
                 $this->password_hash = \Yii::$app->security->generatePasswordHash($this->password);
-                //ĞŞ¸ÄÖ®Ç°Éú³ÉÒ»¸öËæ»úÊı
+                //ä¿®æ”¹ä¹‹å‰ç”Ÿæˆä¸€ä¸ªéšæœºæ•°
                 $this->auth_key = \Yii::$app->security->generateRandomString();
             }
         }
@@ -61,7 +62,7 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return [
             [['username','email'], 'required'],
-            [['password'],'required','on'=>'add'],//on¶¨Òå³¡¾°Ö»ÓĞÔÚÌí¼ÓµÄÊ±ºò³¡¾°ÉúĞ§ÃÜÂë²»ÄÜÎª¿Õ ĞŞ¸Ä¿ÉÒÔÎª¿Õ
+            [['password'],'required','on'=>'add'],//onå®šä¹‰åœºæ™¯åªæœ‰åœ¨æ·»åŠ çš„æ—¶å€™åœºæ™¯ç”Ÿæ•ˆå¯†ç ä¸èƒ½ä¸ºç©º ä¿®æ”¹å¯ä»¥ä¸ºç©º
             [['status', 'created_at', 'updated_at', 'last_login_time'], 'integer'],
             [['username', 'password_hash', 'password_reset_token', 'email', 'last_login_ip'], 'string', 'max' => 255],
             [['logo'], 'string'],
@@ -69,6 +70,7 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
             [['email'], 'unique'],
             [['password_reset_token'], 'unique'],
             [['password'],'string'],
+            [['roles'],'safe','on'=>'add'],
 
         ];
     }
@@ -90,6 +92,8 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
             'updated_at' => 'Updated At',
             'last_login_time' => 'Last Login Time',
             'last_login_ip' => 'Last Login Ip',
+            'roles' => 'é€‰æ‹©è§’è‰²',
+
         ];
     }
 
@@ -157,4 +161,28 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return $this->auth_key === $authKey;
     }
+
+
+    //è·å–ç”¨æˆ·çš„èœå•
+    public function getMenus(){
+        $menuItems = [];
+        //è·å–æ‰€æœ‰ä¸€çº§èœå•
+        $menus = Menu::find()->where(['parent_id'=>0])->all();
+        foreach($menus as $menu){
+            //è·å–ä¸€çº§èœå•çš„æ‰€æœ‰å­èœå•
+            $children = Menu::find()->where(['parent_id'=>$menu->id])->all();
+            $items = [];
+            foreach ($children as $child){
+                //åˆ¤æ–­å½“å‰ç”¨æˆ·æ˜¯å¦æœ‰è¯¥è·¯ç”±çš„æƒé™
+                if(Yii::$app->user->can($child->url)){
+                    $items[] = ['label' => $child->name, 'url' => [$child->url]];
+                }
+            }
+
+            $menuItems[] = ['label' => $menu->name, 'items'=>$items];
+        }
+        return $menuItems;
+
+    }
+
 }

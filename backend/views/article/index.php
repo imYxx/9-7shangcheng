@@ -15,7 +15,7 @@
             <td ><?=$model->id?></td>
             <td ><?=$model->name?></td>
             <td><?=$model->intro?></td>
-            <td><?=$model->article_category->name?></td>
+            <td><?=$model->article_category_id?></td>
             <td><?=$model->sort?></td>
             <td><?=$model->status?'是':'否'?></td>
             <td><?=date('Y/m/d H:i:s',$model->create_time)?></td>

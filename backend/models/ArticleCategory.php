@@ -2,26 +2,25 @@
 
 namespace backend\models;
 
-
-use yii\db\ActiveRecord;
+use Yii;
 
 /**
- * This is the model class for table "brand".
+ * This is the model class for table "article_category".
  *
- * @property integer $id
+ * @property string $id
  * @property string $name
  * @property string $intro
- * @property string $logo
  * @property integer $sort
  * @property integer $status
  */
-class ArticleCategory extends ActiveRecord
+class ArticleCategory extends \yii\db\ActiveRecord
 {
-
-
+    /**
+     * @inheritdoc
+     */
     public static function tableName()
     {
-        return 'brand';
+        return 'article_category';
     }
 
     /**
@@ -29,9 +28,10 @@ class ArticleCategory extends ActiveRecord
      */
     public function rules()
     {
-        return[
-            [['name','intro','sort','status'],'required'],//不能为空
-
+        return [
+            [['intro'], 'string'],
+            [['sort', 'status'], 'integer'],
+            [['name'], 'string', 'max' => 50],
         ];
     }
 
@@ -41,10 +41,11 @@ class ArticleCategory extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'name' => '商品名',
-            'intro' => '介绍',
-            'sort' => '排序',
-            'status' => '是否上架',
+            'id' => 'ID',
+            'name' => 'Name',
+            'intro' => 'Intro',
+            'sort' => 'Sort',
+            'status' => 'Status',
         ];
     }
 }

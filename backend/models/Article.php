@@ -20,6 +20,7 @@ class Article extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
+    public $brand_id;
     public static function tableName()
     {
         return 'article';
@@ -34,6 +35,7 @@ class Article extends \yii\db\ActiveRecord
             [['intro'], 'string'],
             [['article_category_id', 'sort', 'status', 'create_time'], 'integer'],
             [['name'], 'string', 'max' => 50],
+            [['brand'], 'safe'],
         ];
     }
 
@@ -50,6 +52,7 @@ class Article extends \yii\db\ActiveRecord
             'sort' => '文章排序',
             'status' => '是否上架',
             'create_time' => '创建时间',
+            'brand_id' => '品牌',
         ];
     }
     public function getarticle_category(){

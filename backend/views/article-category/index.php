@@ -1,3 +1,4 @@
+<a href="<?=\yii\helpers\Url::to(['article-category/add'])?>"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
 <table class="table table-bordered table-hover">
     <tr class="danger">
         <th >id</th>
@@ -15,7 +16,7 @@
             <td><?=$model->sort?></td>
             <td><?=$model->status?'是':'否'?></td>
             <td>
-                <a href="<?=\yii\helpers\Url::to(['article-category/add'])?>"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+
                 <a href="<?=\yii\helpers\Url::to(['article-category/del','id'=>$model->id])?>"<span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
                 <a href="<?=\yii\helpers\Url::to(['article-category/edit','id'=>$model->id])?>"<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a>
             </td>

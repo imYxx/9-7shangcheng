@@ -3,6 +3,7 @@
 namespace backend\controllers;
 
 use backend\models\Admin;
+use backend\models\RoleForm;
 use flyok666\qiniu\Qiniu;
 use flyok666\uploadifive\UploadAction;
 use backend\models\LoginForm;
@@ -36,15 +37,18 @@ class AdminController extends \yii\web\Controller
     }
     //用户添加
     public function actionAdd(){
-
+        $auth = \Yii::$app->authManager;
         $model= new Admin();
         $model->scenario='add';
         $request=\Yii::$app->request;
         if($request->isPost){
             $model->load($request->post());
-           // var_dump($model);exit;
+            $roles = $auth->getRole($model->roles);
             if ($model->validate()) {
                 $model->save();
+                //添加角色
+                $id = $model->id;
+                $auth->assign($roles,$id);
                 //var_dump($model);exit;
                 \Yii::$app->session->setFlash('info', '添加成功');
                 return $this->redirect(['admin/index']);
@@ -138,22 +142,44 @@ class AdminController extends \yii\web\Controller
 
     //用户修改
     public function actionEdit($id){
-
-        $model= new Admin();
-        $request=\Yii::$app->request;
+        //显示修改页面
+        //根据ID查询数据库数据回显
+        //修改数据提交数据
+        //更新数据保存数据
+        //跳转
         $model = Admin::findOne(['id'=>$id]);
+        $auth = \Yii::$app->authManager;
+        $model->scenario='add';
+        $request=\Yii::$app->request;
+
+        $roles = array_keys($auth->getRolesByUser($id));
+        $model->roles= array_keys($auth->getRolesByUser($id));
+
         if($request->isPost){
             $model->load($request->post());
-            // var_dump($model);exit;
+            $roles = $auth->getRole($model->roles);
+            //var_dump($model->roles);exit;
             if ($model->validate()) {
+                $auth->revokeAll($model->id);
+                if($model->roles){
+                    foreach($model->roles as $rolename){
+                        $role = $auth->getRole($rolename);
+                        $auth->assign($role,$id);
+                    }
+                }
                 $model->save();
+                $id = $model->id;
+                //$auth->revoke($roles,$id);
+
+                //$auth->assign($roles,$id);
                 //var_dump($model);exit;
-                \Yii::$app->session->setFlash('info', '修改成功');
+                \Yii::$app->session->setFlash('info', '添加成功');
                 return $this->redirect(['admin/index']);
 
 
             }
         }
+
         return $this->render('add',['model'=>$model]);
     }
 
@@ -188,9 +214,7 @@ class AdminController extends \yii\web\Controller
                     //var_dump($pwd);exit;
                     if($pwd){
                         //账户密码正确,保存信息到
-
                          $user = \Yii::$app->user;
-
                         //勾中记住我保存密码三天
                             $duration = $model->remember?259200:0;
                             \Yii::$app->user->login($admin,$duration);
@@ -239,13 +263,55 @@ class AdminController extends \yii\web\Controller
                     ],
                     [
                        'allow'=>true,
-                       'actions'=>['logout','add','edit','del','index','captcha','s-upload'],
+                       'actions'=>['logout','add','edit','del','index','captcha','s-upload','pwd'],
                         'roles'=>['@'],
                     ],
                 ],
             ]
         ];
     }
+
+    //用户密码修改
+
+    public function actionPwd(){
+        $message=new LoginForm();
+        //获取session里面的数据
+        $identity=\Yii::$app->user->identity;
+        //找到当前用户登录的ID
+        $id=$identity->id;
+        $request=\Yii::$app->request;
+        //提交表单修改
+        if($request->isPost){
+            $message->load($request->post());
+            //var_dump($message);exit;
+            //验证提交的密码和用户密码是否一致
+            $result=\Yii::$app->security->validatePassword($message->password_hash,$identity->password_hash);
+            if($result){
+                //输入的两次密码不一致
+                if($message->newpassword != $message->reppassword){
+                    $message->addError('reppassword','密码不一致');
+                }else{
+                    //密码一致
+                    //查询出一条记录,并更新密码
+                    $model=Admin::findOne(['id'=>$id]);
+                    $model->password_hash=\Yii::$app->security->generatePasswordHash($message->reppassword);
+                    //保存
+                    $model->save(false);
+                    //修改成功退出登录并跳转到登录页面
+                    \Yii::$app->user->logout();
+                    \Yii::$app->session->setFlash('success','密码修改成功,请重新登录');
+                    return $this->redirect('login');
+                }
+
+
+            }else{
+                $message->addError('password_hash','密码不正确');
+            }
+
+        }
+        return $this->render('pwd',['message'=>$message,'id'=>$identity]);
+    }
+
 
 
 

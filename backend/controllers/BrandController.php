@@ -46,19 +46,8 @@ class BrandController extends \yii\web\Controller
         if($request->isPost){
             //加载数据
             $model->load($request->post());
-            //处理上传文件实例化上传对象
-            //$model->file=UploadedFile::getInstance($model,'file');
-
             if ($model->validate()) {
-                //移动文件的路径，已经包含了文件名
-                //$file = '/upload/' . uniqid() . '.' . $model->file->getExtension();
-                //保存文件将文件存放的地址saveAs
-
-                //$model->file->saveAs(\Yii::getAlias('@webroot') . $file, false);
-                //把文件的地址赋值给photo字段
-                //$model->logo = $file;
-                //$model->create_time = time();
-                $model->save(false);//save方法默认会再次执行验证 $model->validate()
+                $model->save(false);
                 //var_dump($model->getErrors());exit;
                 \Yii::$app->session->setFlash('info', '添加成功');
                 return $this->redirect(['brand/index']);
@@ -79,6 +68,7 @@ class BrandController extends \yii\web\Controller
         $model = new Brand();
         $request = \Yii::$app->request;
         $model = Brand::findOne(['id'=>$id]);
+        //var_dump($model);exit;
         if($request->isPost){
             //加载数据
             $model->load($request->post());

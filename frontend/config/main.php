@@ -16,8 +16,9 @@ return [
             'csrfParam' => '_csrf-frontend',
         ],
         'user' => [
-            'identityClass' => 'common\models\User',
+            'identityClass' => 'frontend\models\Member',
             'enableAutoLogin' => true,
+            'loginUrl'=>['member/login'],
             'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
         ],
         'session' => [
@@ -36,14 +37,14 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        /*
+
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
             ],
         ],
-        */
+
     ],
     'params' => $params,
 ];

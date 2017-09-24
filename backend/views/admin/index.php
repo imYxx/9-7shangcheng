@@ -1,5 +1,7 @@
+
 <a href="<?=\yii\helpers\Url::to(['admin/add'])?>" class="btn btn-warning">添加用户</a>
-<a href="<?=\yii\helpers\Url::to(['admin/add'])?>"  class="btn btn-danger">修改密码</a>
+
+<a href="<?=\yii\helpers\Url::to(['admin/pwd'])?>"  class="btn btn-danger">修改密码</a>
 
 
 <table class="table table-bordered table-hover">
@@ -23,7 +25,7 @@
             <td><?=$model->status?'正常':'回收站'?></td>
             <td><?=date('Y-m-d h:i:s',$model->created_at)?></td>
             <td><?=date('Y/m/d h:i:s',$model->last_login_time)?></td>
-            <td><?=$model->last_login_ip?></td>
+            <td><?=$model->last_login_ip?$model->last_login_ip:'未登录过'?></td>
             <td>
                 <a href="<?=\yii\helpers\Url::to(['admin/del','id'=>$model->id])?>"><span class="glyphicon glyphicon-trash"></span></a>
                 <a href="<?=\yii\helpers\Url::to(['admin/edit','id'=>$model->id])?>"<span class="glyphicon glyphicon-cog" aria-hidden="true"></span></a>

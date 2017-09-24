@@ -29,6 +29,7 @@ class Goods extends \yii\db\ActiveRecord
     /**
      * @inheritdoc
      */
+
     public static function tableName()
     {
         return 'goods';
@@ -100,7 +101,7 @@ class Goods extends \yii\db\ActiveRecord
         return $this->hasOne(Brand::className(),['id'=>'brand_id']);
     }
 
-    public function getgoods_category(){
+    public function getGoodsCategory(){
         return $this->hasOne(GoodsCategory::className(),['id'=>'goods_category_id']);
     }
 

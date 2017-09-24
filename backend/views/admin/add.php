@@ -54,5 +54,7 @@ echo $form->field($model,'password')->textInput();
 
 echo $form->field($model,'email')->textInput();
 echo $form->field($model,'status',['inline'=>true])->radioList([1=>'正常',-1=>'回收站']);
+echo $form->field($model,'roles')->checkboxList(\backend\models\RoleForm::getRole());
+
 echo \yii\bootstrap\Html::submitButton('提交',['class'=>'btn btn-info']);
 \yii\bootstrap\ActiveForm::end();

@@ -63,7 +63,7 @@ class GoodsController extends \yii\web\Controller
                 if ($model->validate()) {
                     $date=date('Ymd');
                     $count=GoodsDayCount::findOne(['day'=>$date]);
-// print_r($count);die;
+                // print_r($count);die;
                     if($count){
                         if($count->count <9){
 
@@ -92,13 +92,7 @@ class GoodsController extends \yii\web\Controller
 
                     $content->goods_id=$model->id;
                     $content->save(false);
-//                    $d= date('Y-m-d');
-//                    $day =GoodsDayCount::findOne(['day'=>$d]);
-//                    if(!$day){
-//                        $day = new GoodsDayCount();
-//                        $count->count=$count->count+1;
-//                        $day->save();
-//                    }
+
 
                     \Yii::$app->session->setFlash('info', '添加成功');
                     return $this->redirect(['goods/index']);
@@ -117,18 +111,7 @@ class GoodsController extends \yii\web\Controller
                 'baseUrl' => '@web/upload',
                 'enableCsrf' => true, // default
                 'postFieldName' => 'Filedata', // default
-                //BEGIN METHOD
-                //'format' => [$this, 'methodName'],
-                //END METHOD
-                //BEGIN CLOSURE BY-HASH
                 'overwriteIfExist' => true,
-                //'format' => function (UploadAction $action) {
-                //$fileext = $action->uploadfile->getExtension();
-                // $filename = sha1_file($action->uploadfile->tempName);
-                // return "{$filename}.{$fileext}";
-                // },
-                //END CLOSURE BY-HASH
-                //BEGIN CLOSURE BY TIME
                 'format' => function (UploadAction $action) {
                     $fileext = $action->uploadfile->getExtension();
                     $filehash = sha1(uniqid() . time());

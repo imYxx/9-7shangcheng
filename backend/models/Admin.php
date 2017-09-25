@@ -39,7 +39,7 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
             //保存之前添加船舰时间
             $this->created_at=time();
             //保存之前对密码进行hash加密
-            $this->password_hash=\Yii::$app->security->generatePasswordHash($this->password_hash);
+            $this->password_hash=\Yii::$app->security->generatePasswordHash($this->password);
             //保存之前生成一个随机数
             $this->auth_key=\Yii::$app->security->generateRandomString();
         }else{//修改

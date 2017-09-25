@@ -50,7 +50,7 @@ EOF
 
 
 echo \yii\bootstrap\Html::img($model->logo,['id'=>'img','width'=>"380"]);
-echo $form->field($model,'password')->textInput();
+echo $form->field($model,'password')->passwordInput();
 
 echo $form->field($model,'email')->textInput();
 echo $form->field($model,'status',['inline'=>true])->radioList([1=>'正常',-1=>'回收站']);
